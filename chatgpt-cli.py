@@ -21,7 +21,7 @@ def getApiKey(keyFile):
 
 # Send a http POST request to the API along with the API key and user's prompt. Will return response from API.
 def sendPrompt(prompt, lastReply, apiKey):
-	# TODO: Enhance chat history capabilties by using assistant role.
+	# TODO: Enhance chat history capabilities by using assistant role.
 	# Messages for the api
 	
 	messages=[{"role": "assistant", "content": lastReply[len(lastReply)-1]}, {"role": "assistant", "content": lastReply[len(lastReply)-2]}, {"role": "assistant", "content": lastReply[len(lastReply)-3]}, {"role": "user", "content": prompt}]
