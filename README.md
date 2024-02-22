@@ -10,4 +10,5 @@ Usage:  ./chatgpt-cli.py --[option]
 Options:
         --help                  Display this help message.
         --key <keyfile>         Specify an api key file.
+        --prompt "prompt"       Print reply from prompt and exit.
 ```
