@@ -7,6 +7,14 @@ import sys
 import json
 import prompt_toolkit
 
+# Print help message
+def printHelp():
+	print(sys.argv[0])
+	print("Usage:  " + sys.argv[0], "--[option]")
+	print("Options:")
+	print("\t--help\t\t\tDisplay this help message.")
+	print("\t--key <keyfile>\t\tSpecify an api key file.")
+
 # TODO: Make api key handling more secure
 # Get an api key from a json file
 def getApiKey(keyFile):
@@ -16,7 +24,6 @@ def getApiKey(keyFile):
 			apiKey = data.get('apiKey')
 		return apiKey
 	except FileNotFoundError:
-		print("API file not found.")
 		return 0
 
 # Send a http POST request to the API along with the API key and user's prompt. Will return response from API.
@@ -43,9 +50,23 @@ def sendPrompt(prompt, lastReply, apiKey):
 		return response.status_code()
 
 def main():
+	apiKey = 0
+
+	# Evaluate options
 	# TODO: Implement error handling for when incorrect arguments are provided.
-	# Get api key from file provided as argument 1
-	apiKey = getApiKey(sys.argv[1])
+	for i in range(len(sys.argv)):
+		# Print help message and exit
+		if sys.argv[i] == "--help" or sys.argv[i] == "-h":
+			printHelp()
+			sys.exit()
+		# Let user pick a key file
+		elif sys.argv[i] == "--key" or sys.argv[i] == "-k":
+			apiKey = getApiKey(sys.argv[i+1])
+
+	# Make sure we have a key file
+	if apiKey == 0:
+		print("Error: API key file not found.")
+		sys.exit()
 
 	# Run-While loop
 	prompt = ''
