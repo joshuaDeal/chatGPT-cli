@@ -14,6 +14,7 @@ def printHelp():
 	print("Options:")
 	print("\t--help\t\t\tDisplay this help message.")
 	print("\t--key <keyfile>\t\tSpecify an api key file.")
+	print("\t--prompt \"prompt\"\tPrint reply from prompt and exit.")
 
 # TODO: Make api key handling more secure
 # Get an api key from a json file
@@ -51,6 +52,9 @@ def sendPrompt(prompt, lastReply, apiKey):
 
 def main():
 	apiKey = 0
+	prompt = ''
+	reply = ['','','']
+	runOnce = False
 
 	# Evaluate options
 	# TODO: Implement error handling for when incorrect arguments are provided.
@@ -62,15 +66,28 @@ def main():
 		# Let user pick a key file
 		elif sys.argv[i] == "--key" or sys.argv[i] == "-k":
 			apiKey = getApiKey(sys.argv[i+1])
+		# Allow the user to send a single prompt and quit
+		elif sys.argv[i] == "--prompt" or sys.argv[i] == "-p":
+			runOnce = True
+			prompt = sys.argv[i+1]
+			# Send prompt to api
+			#reply.append(sendPrompt(prompt, reply, apiKey)['choices'][0]['message']['content'])
+			#print(reply[len(reply)-1])
+			#sys.exit()
 
 	# Make sure we have a key file
 	if apiKey == 0:
 		print("Error: API key file not found.")
 		sys.exit()
 
+	# In case we are in run once mode	
+	if runOnce:
+		#Send prompt to api
+		reply.append(sendPrompt(prompt, reply, apiKey)['choices'][0]['message']['content'])
+		print(reply[len(reply)-1])
+		sys.exit()
+
 	# Run-While loop
-	prompt = ''
-	reply = ['','','']
 	while prompt != 'exit':
 		# Get a prompt from the user
 		prompt = prompt_toolkit.prompt('ChatGPT >> ')
@@ -79,5 +96,8 @@ def main():
 			# Send the prompt to the API. Get the content from the response and print it to the terminal
 			reply.append(sendPrompt(prompt, reply, apiKey)['choices'][0]['message']['content'])
 			print(reply[len(reply)-1])
+
+			if runOnce:
+				sys.exit()
 
 main()
