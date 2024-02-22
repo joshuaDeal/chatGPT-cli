@@ -14,7 +14,7 @@ def printHelp():
 	print("Options:")
 	print("\t--help\t\t\tDisplay this help message.")
 	print("\t--key <keyfile>\t\tSpecify an api key file.")
-	print("\t--prompt \"prompt\"\tPrint reply from prompt and exit.")
+	print("\t--prompt \"prompt\"\tPrint reply from prompt and exit. (Default behavior is to run in interactive mode.)")
 
 # TODO: Make api key handling more secure
 # Get an api key from a json file
