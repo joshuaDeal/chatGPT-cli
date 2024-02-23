@@ -28,13 +28,16 @@ def getApiKey(keyFile):
 		return 0
 
 # Send a http POST request to the API along with the API key and user's prompt. Will return response from API.
-def sendPrompt(prompt, lastReply, apiKey):
-	# TODO: Enhance chat history capabilities by using assistant role.
-	# Messages for the api
-	
-	messages=[{"role": "assistant", "content": lastReply[len(lastReply)-1]}, {"role": "assistant", "content": lastReply[len(lastReply)-2]}, {"role": "assistant", "content": lastReply[len(lastReply)-3]}, {"role": "user", "content": prompt}]
+def sendPrompt(prompt, history, apiKey):
+	# Give the chatbot a chat history for context.
+	messages=[]
+	for i in range(len(history)):
+		messages.append({"role": "assistant", "content": history[i]})
 
-	# Dictionary to use in post request
+	# Also give the chatbot the user's current prompt.
+	messages.append({"role": "user", "content": prompt})
+
+	# Other useful data for the chatbot.
 	data = {"model": "gpt-3.5-turbo", "messages": messages}
 
 	# Headers for the post request
@@ -53,7 +56,7 @@ def sendPrompt(prompt, lastReply, apiKey):
 def main():
 	apiKey = 0
 	prompt = ''
-	reply = ['','','']
+	history = []
 	runOnce = False
 
 	# Evaluate options
@@ -70,10 +73,6 @@ def main():
 		elif sys.argv[i] == "--prompt" or sys.argv[i] == "-p":
 			runOnce = True
 			prompt = sys.argv[i+1]
-			# Send prompt to api
-			#reply.append(sendPrompt(prompt, reply, apiKey)['choices'][0]['message']['content'])
-			#print(reply[len(reply)-1])
-			#sys.exit()
 
 	# Make sure we have a key file
 	if apiKey == 0:
@@ -83,7 +82,7 @@ def main():
 	# In case we are in run once mode	
 	if runOnce:
 		#Send prompt to api
-		reply.append(sendPrompt(prompt, reply, apiKey)['choices'][0]['message']['content'])
+		reply = sendPrompt(prompt, reply, apiKey)['choices'][0]['message']['content']
 		print(reply[len(reply)-1])
 		sys.exit()
 
@@ -94,8 +93,11 @@ def main():
 
 		if prompt != 'exit':
 			# Send the prompt to the API. Get the content from the response and print it to the terminal
-			reply.append(sendPrompt(prompt, reply, apiKey)['choices'][0]['message']['content'])
-			print(reply[len(reply)-1])
+			reply = sendPrompt(prompt, history, apiKey)['choices'][0]['message']['content']
+
+			history.append(f"User: {prompt}\nChatbot: {reply}")
+			
+			print("\n" + reply + "\n")
 
 			if runOnce:
 				sys.exit()
