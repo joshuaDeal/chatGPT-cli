@@ -4,6 +4,7 @@
 
 import requests
 import sys
+import os
 import json
 import prompt_toolkit
 
@@ -13,7 +14,7 @@ def printHelp():
 	print("Usage:  " + sys.argv[0], "--[option]")
 	print("Options:")
 	print("\t--help\t\t\tDisplay this help message.")
-	print("\t--key <keyfile>\t\tSpecify an api key file.")
+	print("\t--key <keyfile>\t\tSpecify an api key file.(Default behavior is to get this from $OPENAI_API_KEY)")
 	print("\t--prompt \"prompt\"\tPrint reply from prompt and exit. (Default behavior is to run in interactive mode.)")
 
 # TODO: Make api key handling more secure
@@ -58,6 +59,10 @@ def main():
 	prompt = ''
 	history = []
 	runOnce = False
+
+	# Check if $OPENAI_API_KEY exists. use it if it dose
+	if os.getenv('OPENAI_API_KEY') != '':
+		apiKey = os.getenv('OPENAI_API_KEY')
 
 	# Evaluate options
 	# TODO: Implement error handling for when incorrect arguments are provided.
