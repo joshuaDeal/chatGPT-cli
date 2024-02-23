@@ -92,11 +92,13 @@ def main():
 		prompt = prompt_toolkit.prompt('ChatGPT >> ')
 
 		if prompt != 'exit':
-			# Send the prompt to the API. Get the content from the response and print it to the terminal
+			# Send the prompt to the API. Get the content from the response and save it as reply.
 			reply = sendPrompt(prompt, history, apiKey)['choices'][0]['message']['content']
 
+			# Update history.
 			history.append(f"User: {prompt}\nChatbot: {reply}")
-			
+
+			# Print the reply
 			print("\n" + reply + "\n")
 
 			if runOnce:
