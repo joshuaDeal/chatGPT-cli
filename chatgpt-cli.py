@@ -87,8 +87,8 @@ def main():
 	# In case we are in run once mode	
 	if runOnce:
 		#Send prompt to api
-		reply = sendPrompt(prompt, reply, apiKey)['choices'][0]['message']['content']
-		print(reply[len(reply)-1])
+		reply = sendPrompt(prompt, history, apiKey)['choices'][0]['message']['content']
+		print(reply)
 		sys.exit()
 
 	# Run-While loop
