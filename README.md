@@ -8,9 +8,9 @@ chatgpt-cli.py
 Usage:  ./chatgpt-cli.py --[option]
 Options:
         --help                  Display this help message.
-        --key <keyfile>         Specify an api key file. (Default behavior is to get this from $OPENAI_API_KEY)
+        --key <keyfile>         Specify an api key file. (Default behavior is to get this from $OPENAI_API_KEY.)
         --prompt "prompt"       Print reply from prompt and exit. (Default behavior is to run in interactive mode.)
-        --max-history <number>  Set maximum chat memory for chatbot. (Doing this will decrease the size of api calls)
+        --max-history <number>  Set maximum chat memory for chatbot. (Doing this will decrease the size of api calls.)
 ```
 
 ## Dependencies
