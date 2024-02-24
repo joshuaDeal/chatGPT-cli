@@ -16,6 +16,7 @@ def printHelp():
 	print("\t--help\t\t\tDisplay this help message.")
 	print("\t--key <keyfile>\t\tSpecify an api key file.(Default behavior is to get this from $OPENAI_API_KEY)")
 	print("\t--prompt \"prompt\"\tPrint reply from prompt and exit. (Default behavior is to run in interactive mode.)")
+	print("\t--max-history <number>\tSet maximum chat memory for chatbot. (Doing this will decrease the size of api calls)")
 
 # TODO: Make api key handling more secure
 # Get an api key from a json file
@@ -58,6 +59,7 @@ def main():
 	apiKey = 0
 	prompt = ''
 	history = []
+	maxHist = 0
 	runOnce = False
 
 	# Check if $OPENAI_API_KEY exists. use it if it dose
@@ -78,6 +80,9 @@ def main():
 		elif sys.argv[i] == "--prompt" or sys.argv[i] == "-p":
 			runOnce = True
 			prompt = sys.argv[i+1]
+		# Allow user to set a maximum history value
+		elif sys.argv[i] == "--max-history" or sys.argv[i] == "-m":
+			maxHist = int(sys.argv[i+1])
 
 	# Make sure we have a key file
 	if apiKey == 0:
@@ -99,6 +104,11 @@ def main():
 		if prompt != 'exit':
 			# Send the prompt to the API. Get the content from the response and save it as reply.
 			reply = sendPrompt(prompt, history, apiKey)['choices'][0]['message']['content']
+
+			# Remove first item from history if maxHistory is set
+			if maxHist > 0:
+				if len(history) > maxHist:
+					history.pop(0)
 
 			# Update history.
 			history.append(f"User: {prompt}\nChatbot: {reply}")
