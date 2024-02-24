@@ -5,7 +5,7 @@ A simple python script for interfacing with ChatGPT in the command prompt.
 ```chatgpt-cli.py --help```
 ```
 chatgpt-cli.py
-Usage:  ./chatgpt-cli.py --[option]
+Usage:  chatgpt-cli.py --[option]
 Options:
         --help                  Display this help message.
         --key <keyfile>         Specify an api key file. (Default behavior is to get this from $OPENAI_API_KEY.)
