@@ -14,9 +14,9 @@ def printHelp():
 	print("Usage:  " + sys.argv[0], "--[option]")
 	print("Options:")
 	print("\t--help\t\t\tDisplay this help message.")
-	print("\t--key <keyfile>\t\tSpecify an api key file. (Default behavior is to get this from $OPENAI_API_KEY)")
+	print("\t--key <keyfile>\t\tSpecify an api key file. (Default behavior is to get this from $OPENAI_API_KEY.)")
 	print("\t--prompt \"prompt\"\tPrint reply from prompt and exit. (Default behavior is to run in interactive mode.)")
-	print("\t--max-history <number>\tSet maximum chat memory for chatbot. (Doing this will decrease the size of api calls)")
+	print("\t--max-history <number>\tSet maximum chat memory for chatbot. (Doing this will decrease the size of api calls.)")
 
 # TODO: Make api key handling more secure
 # Get an api key from a json file
