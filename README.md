@@ -31,8 +31,8 @@ The following are dependencies that you may need to install.
 
 	`python -m pip install -r ./requires.txt`
 
-### Configureation
-1. You can create a json file with the value "apiKey" and pass it to the program each time you run it via the "--key" option, but this method is not recomended.
+### Configuration
+1. You can create a json file with the value "apiKey" and pass it to the program each time you run it via the "--key" option, but this method is not recommended.
 
 	Said json file should look something like this...
         
