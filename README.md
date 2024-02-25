@@ -46,4 +46,4 @@ The following are dependencies that you may need to install.
 
    1. `source ~/.bashrc`
 
-	To test if this has been done correctly run ```echo $OPENAP_API_KEY```. The output should be your API key.
+	To test if this has been done correctly run ```echo $OPENAI_API_KEY```. The output should be your API key.
