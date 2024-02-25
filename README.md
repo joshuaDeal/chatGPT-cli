@@ -40,7 +40,7 @@ The following are dependencies that you may need to install.
                 "apiKey": "Put your API key here."
         }
  
-1. You're best bet is to set up the environmental variable "OPENAI_API_KEY"
+1. Your best bet is to set up the environmental variable "OPENAI_API_KEY"
 
    1. `echo "export OPENAI_API_KEY='put your api key here'" >> ~/.bashrc"`
 
