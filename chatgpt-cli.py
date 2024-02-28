@@ -58,10 +58,8 @@ def sendPrompt(prompt, history, apiKey):
 
 def updateLog(content, logFile):
 	with open(logFile, 'a') as file:
-		for i in range(len(content)):
-			file.write(content[i])
+		file.writelines(content)
 		file.write('\n')
-	return 1
 
 def main():
 	apiKey = 0
