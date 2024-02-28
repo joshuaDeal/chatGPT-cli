@@ -57,7 +57,6 @@ def sendPrompt(prompt, history, apiKey):
 		return response.status_code()
 
 def updateLog(content, logFile):
-	print("Updating log...")
 	with open(logFile, 'a') as file:
 		for i in range(len(content)):
 			file.write(content[i])
