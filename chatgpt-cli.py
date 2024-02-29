@@ -127,9 +127,7 @@ def main():
 			# Print the reply
 			print("\n" + reply + "\n")
 
-			if runOnce:
-				sys.exit()
-			elif logMode:
+			if logMode:
 				updateLog(history[-1], logFile)
 
 main()
