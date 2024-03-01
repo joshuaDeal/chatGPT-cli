@@ -18,6 +18,7 @@ def printHelp():
 	print("\t--prompt \"prompt\"\tPrint reply from prompt and exit. (Default behavior is to run in interactive mode.)")
 	print("\t--max-history <number>\tSet maximum chat memory for chatbot. (Doing this will decrease the size of api calls.)")
 	print("\t--log <logfile>\t\tSet a log file to save the chat history in.")
+	print("\t--model \"model\"\t\tSpecify which model to use. (Defaults to gpt-3.5-turbo)")
 
 # TODO: Make api key handling more secure
 # Get an api key from a json file
@@ -31,7 +32,7 @@ def getApiKey(keyFile):
 		return 0
 
 # Send a http POST request to the API along with the API key and user's prompt. Will return response from API.
-def sendPrompt(prompt, history, apiKey):
+def sendPrompt(prompt, history, apiKey, model):
 	# Give the chatbot a chat history for context.
 	messages=[]
 	for i in range(len(history)):
@@ -41,7 +42,7 @@ def sendPrompt(prompt, history, apiKey):
 	messages.append({"role": "user", "content": prompt})
 
 	# Other useful data for the chatbot.
-	data = {"model": "gpt-3.5-turbo", "messages": messages}
+	data = {"model": model, "messages": messages}
 
 	# Headers for the post request
 	headers = {"Content-Type": "application/json", "Authorization": f"Bearer {apiKey}", "OpenAI-Beta": "assistants=v1"}
@@ -64,6 +65,7 @@ def updateLog(content, logFile):
 def main():
 	apiKey = 0
 	prompt = ''
+	model = 'gpt-3.5-turbo'
 	history = []
 	maxHist = 0
 	runOnce = False
@@ -94,6 +96,8 @@ def main():
 		elif sys.argv[i] == "--log" or sys.argv[i] == "-l":
 			logMode = True
 			logFile = sys.argv[i+1]
+		elif sys.argv[i] == "--model" or sys.argv[i] == "-M":
+			model = sys.argv[i+1]
 
 	# Make sure we have a key file
 	if apiKey == 0:
@@ -103,7 +107,7 @@ def main():
 	# In case we are in run once mode	
 	if runOnce:
 		#Send prompt to api
-		reply = sendPrompt(prompt, history, apiKey)['choices'][0]['message']['content']
+		reply = sendPrompt(prompt, history, apiKey, model)['choices'][0]['message']['content']
 		print(reply)
 		sys.exit()
 
@@ -114,7 +118,7 @@ def main():
 
 		if prompt != 'exit':
 			# Send the prompt to the API. Get the content from the response and save it as reply.
-			reply = sendPrompt(prompt, history, apiKey)['choices'][0]['message']['content']
+			reply = sendPrompt(prompt, history, apiKey, model)['choices'][0]['message']['content']
 
 			# Remove first item from history if maxHistory is set
 			if maxHist > 0:
