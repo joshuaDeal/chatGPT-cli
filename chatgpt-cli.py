@@ -18,7 +18,7 @@ def printHelp():
 	print("\t--prompt \"prompt\"\tPrint reply from prompt and exit. (Default behavior is to run in interactive mode.)")
 	print("\t--max-history <number>\tSet maximum chat memory for chatbot. (Doing this will decrease the size of api calls.)")
 	print("\t--log <logfile>\t\tSet a log file to save the chat history in.")
-	print("\t--model \"model\"\t\tSpecify which model to use. (Defaults to gpt-3.5-turbo)")
+	print("\t--model \"model\"\t\tSpecify which model to use. (Defaults to gpt-3.5-turbo.)")
 
 # TODO: Make api key handling more secure
 # Get an api key from a json file
