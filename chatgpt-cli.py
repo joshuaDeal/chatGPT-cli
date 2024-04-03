@@ -134,4 +134,5 @@ def main():
 			if logMode:
 				updateLog(history[-1], logFile)
 
-main()
+if __name__ == "__main__":
+	main()
