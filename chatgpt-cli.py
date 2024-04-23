@@ -62,21 +62,13 @@ def updateLog(content, logFile):
 		file.writelines(content)
 		file.write('\n')
 
-def main():
-	apiKey = 0
-	prompt = ''
-	model = 'gpt-3.5-turbo'
-	history = []
-	maxHist = 0
-	runOnce = False
-	logMode = False
-
-	# Check if $OPENAI_API_KEY exists. use it if it dose
-	if os.getenv('OPENAI_API_KEY') != '':
-		apiKey = os.getenv('OPENAI_API_KEY')
-
-	# Evaluate options
+# Evaluate options
+def evalArguments():
 	# TODO: Implement error handling for when incorrect arguments are provided.
+
+	# Default values
+	output = {'apiKey': 0,'prompt': '','model': 'gpt-3.5-turbo','maxHist': 0,'runOnce': False, 'logMode': False}
+
 	for i in range(len(sys.argv)):
 		# Print help message and exit
 		if sys.argv[i] == "--help" or sys.argv[i] == "-h":
@@ -84,55 +76,67 @@ def main():
 			sys.exit()
 		# Let user pick a key file
 		elif sys.argv[i] == "--key" or sys.argv[i] == "-k":
-			apiKey = getApiKey(sys.argv[i+1])
+			output['apiKey'] = getApiKey(sys.argv[i+1])
 		# Allow the user to send a single prompt and quit
 		elif sys.argv[i] == "--prompt" or sys.argv[i] == "-p":
-			runOnce = True
-			prompt = sys.argv[i+1]
+			output['runOnce'] = True
+			output['prompt'] = sys.argv[i+1]
 		# Allow user to set a maximum history value
 		elif sys.argv[i] == "--max-history" or sys.argv[i] == "-m":
-			maxHist = int(sys.argv[i+1])
+			output['maxHist'] = int(sys.argv[i+1])
 		# Allow user to enable log mode.
 		elif sys.argv[i] == "--log" or sys.argv[i] == "-l":
-			logMode = True
-			logFile = sys.argv[i+1]
+			output['logMode'] = True
+			output['logFile'] = sys.argv[i+1]
 		elif sys.argv[i] == "--model" or sys.argv[i] == "-M":
-			model = sys.argv[i+1]
+			output['model'] = sys.argv[i+1]
+
+	return output
+
+def main():
+	history = []
+
+	# Evaluate options
+	arguments = evalArguments()
+
+	# Check if $OPENAI_API_KEY exists. use it if it dose
+	if os.getenv('OPENAI_API_KEY') != '':
+		arguments['apiKey'] = os.getenv('OPENAI_API_KEY')
 
 	# Make sure we have a key file
-	if apiKey == 0:
+	if arguments['apiKey'] == 0:
 		print("Error: API key file not found.")
 		sys.exit()
 
 	# In case we are in run once mode	
-	if runOnce:
+	if arguments['runOnce']:
 		#Send prompt to api
-		reply = sendPrompt(prompt, history, apiKey, model)['choices'][0]['message']['content']
+		reply = sendPrompt(arguments['prompt'], history, arguments['apiKey'], arguments['model'])['choices'][0]['message']['content']
 		print(reply)
 		sys.exit()
 
 	# Run-While loop
-	while prompt != 'exit':
+	while arguments['prompt'] != 'exit':
 		# Get a prompt from the user
-		prompt = prompt_toolkit.prompt('ChatGPT >> ')
+		arguments['prompt'] = prompt_toolkit.prompt('ChatGPT >> ')
 
-		if prompt != 'exit':
+		if arguments['prompt'] != 'exit':
 			# Send the prompt to the API. Get the content from the response and save it as reply.
-			reply = sendPrompt(prompt, history, apiKey, model)['choices'][0]['message']['content']
+			reply = sendPrompt(arguments['prompt'], history, arguments['apiKey'], arguments['model'])['choices'][0]['message']['content']
 
 			# Remove first item from history if maxHistory is set
-			if maxHist > 0:
-				if len(history) > maxHist:
+			if arguments['maxHist'] > 0:
+				if len(history) > arguments['maxHist']:
 					history.pop(0)
 
 			# Update history.
-			history.append(f"User: {prompt}\nChatbot: {reply}")
+			history.append(f"User: {arguments['prompt']}\nChatbot: {reply}")
 
 			# Print the reply
 			print("\n" + reply + "\n")
 
-			if logMode:
-				updateLog(history[-1], logFile)
+			if arguments['logMode']:
+				updateLog(history[-1], arguments['logFile'])
 
 if __name__ == "__main__":
 	main()
