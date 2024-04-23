@@ -55,7 +55,7 @@ def sendPrompt(prompt, history, apiKey, model):
 		return response.json()
 	else:
 		print("Error:", response.status_code)
-		return response.status_code()
+		return response.status_code
 
 def updateLog(content, logFile):
 	with open(logFile, 'a') as file:
