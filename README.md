@@ -13,7 +13,7 @@ A simple python script for interfacing with ChatGPT in the command prompt.
             --max-history <number>          Set maximum chat memory for chatbot. (Doing this will decrease the size of api calls.)
             --log <logfile>                 Set a log file to save the chat history in.
             --model "model"                 Specify which model to use. (Defaults to gpt-3.5-turbo.)
-            --system-message "message"      Provide the chatbot with some context or instructions about its behavior
+            --system-message "message"      Provide the chatbot with some context or instructions about its behavior.
 
 
 ## Dependencies
