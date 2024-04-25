@@ -13,12 +13,13 @@ def printHelp():
 	print(sys.argv[0])
 	print("Usage:  " + sys.argv[0], "--[option]")
 	print("Options:")
-	print("\t--help\t\t\tDisplay this help message.")
-	print("\t--key <keyfile>\t\tSpecify an api key file. (Default behavior is to get this from $OPENAI_API_KEY.)")
-	print("\t--prompt \"prompt\"\tPrint reply from prompt and exit. (Default behavior is to run in interactive mode.)")
-	print("\t--max-history <number>\tSet maximum chat memory for chatbot. (Doing this will decrease the size of api calls.)")
-	print("\t--log <logfile>\t\tSet a log file to save the chat history in.")
-	print("\t--model \"model\"\t\tSpecify which model to use. (Defaults to gpt-3.5-turbo.)")
+	print("\t--help\t\t\t\tDisplay this help message.")
+	print("\t--key <keyfile>\t\t\tSpecify an api key file. (Default behavior is to get this from $OPENAI_API_KEY.)")
+	print("\t--prompt \"prompt\"\t\tPrint reply from prompt and exit. (Default behavior is to run in interactive mode.)")
+	print("\t--max-history <number>\t\tSet maximum chat memory for chatbot. (Doing this will decrease the size of api calls.)")
+	print("\t--log <logfile>\t\t\tSet a log file to save the chat history in.")
+	print("\t--model \"model\"\t\t\tSpecify which model to use. (Defaults to gpt-3.5-turbo.)")
+	print("\t--system-message \"message\"\tProvide the chatbot with some context or instructions about its behavior")
 
 # TODO: Make api key handling more secure
 # Get an api key from a json file
@@ -32,9 +33,14 @@ def getApiKey(keyFile):
 		return 0
 
 # Send a http POST request to the API along with the API key and user's prompt. Will return response from API.
-def sendPrompt(prompt, history, apiKey, model):
-	# Give the chatbot a chat history for context.
+def sendPrompt(prompt, systemMessage, history, apiKey, model):
 	messages=[]
+
+	# Give the chatbot the system message
+	if systemMessage != '':
+		messages.append({"role": "system", "content": systemMessage})
+
+	# Give the chatbot a chat history for context.
 	for i in range(len(history)):
 		messages.append({"role": "assistant", "content": history[i]})
 
@@ -67,7 +73,7 @@ def evalArguments():
 	# TODO: Implement error handling for when incorrect arguments are provided.
 
 	# Default values
-	output = {'apiKey': 0,'prompt': '','model': 'gpt-3.5-turbo','maxHist': 0,'runOnce': False, 'logMode': False}
+	output = {'apiKey': 0,'prompt': '','systemMessage': '','model': 'gpt-3.5-turbo','maxHist': 0,'runOnce': False, 'logMode': False}
 
 	for i in range(len(sys.argv)):
 		# Print help message and exit
@@ -90,6 +96,9 @@ def evalArguments():
 			output['logFile'] = sys.argv[i+1]
 		elif sys.argv[i] == "--model" or sys.argv[i] == "-M":
 			output['model'] = sys.argv[i+1]
+		# Allow user to set a system message
+		elif sys.argv[i] == "--system-message" or sys.argv[i] == "-s":
+			output['systemMessage'] = sys.argv[i+1]
 
 	return output
 
@@ -111,7 +120,7 @@ def main():
 	# In case we are in run once mode	
 	if arguments['runOnce']:
 		#Send prompt to api
-		reply = sendPrompt(arguments['prompt'], history, arguments['apiKey'], arguments['model'])['choices'][0]['message']['content']
+		reply = sendPrompt(arguments['prompt'],arguments['systemMessage'], history, arguments['apiKey'], arguments['model'])['choices'][0]['message']['content']
 		print(reply)
 		sys.exit()
 
@@ -122,7 +131,7 @@ def main():
 
 		if arguments['prompt'] != 'exit':
 			# Send the prompt to the API. Get the content from the response and save it as reply.
-			reply = sendPrompt(arguments['prompt'], history, arguments['apiKey'], arguments['model'])['choices'][0]['message']['content']
+			reply = sendPrompt(arguments['prompt'],arguments['systemMessage'], history, arguments['apiKey'], arguments['model'])['choices'][0]['message']['content']
 
 			# Remove first item from history if maxHistory is set
 			if arguments['maxHist'] > 0:
