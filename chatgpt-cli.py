@@ -18,7 +18,7 @@ def printHelp():
 	print("\t--prompt \"prompt\"\t\tPrint reply from prompt and exit. (Default behavior is to run in interactive mode.)")
 	print("\t--max-history <number>\t\tSet maximum chat memory for chatbot. (Doing this will decrease the size of api calls.)")
 	print("\t--log <logfile>\t\t\tSet a log file to save the chat history in.")
-	print("\t--model \"model\"\t\t\tSpecify which model to use. (Defaults to gpt-3.5-turbo.)")
+	print("\t--model \"model\"\t\t\tSpecify which model to use. (Defaults to gpt-4o-mini.)")
 	print("\t--system-message \"message\"\tProvide the chatbot with some context or instructions about its behavior.")
 
 # TODO: Make api key handling more secure
@@ -73,7 +73,7 @@ def evalArguments():
 	# TODO: Implement error handling for when incorrect arguments are provided.
 
 	# Default values
-	output = {'apiKey': 0,'prompt': '','systemMessage': '','model': 'gpt-3.5-turbo','maxHist': 0,'runOnce': False, 'logMode': False}
+	output = {'apiKey': 0,'prompt': '','systemMessage': '','model': 'gpt-4o-mini','maxHist': 0,'runOnce': False, 'logMode': False}
 
 	for i in range(len(sys.argv)):
 		# Print help message and exit
