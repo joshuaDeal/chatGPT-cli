@@ -130,10 +130,19 @@ def main():
 
 	# In case we are in run once mode	
 	if arguments['runOnce']:
-		#Send prompt to api
-		reply = sendPrompt(arguments['prompt'],arguments['systemMessage'], history, arguments['apiKey'], arguments['model'])['choices'][0]['message']['content']
-		print(reply)
-		sys.exit()
+		# Send the prompt to the API.
+		replyData = sendPrompt(arguments['prompt'],arguments['systemMessage'], history, arguments['apiKey'], arguments['model'])
+
+		# Check API response for errors.
+		if "error" in replyData:
+			print(f"API Error: {replyData['error']}")
+			sys.exit(1)
+		elif "choices" in replyData and len(replyData["choices"]) > 0:
+			reply = replyData["choices"][0]["message"]["content"]
+			print(reply)
+			sys.exit(1)
+		else:
+			print("Error: Unexpected API response format.")
 
 	# Run-While loop
 	while arguments['prompt'] != 'exit':
@@ -141,8 +150,17 @@ def main():
 		arguments['prompt'] = prompt_toolkit.prompt('ChatGPT >> ')
 
 		if arguments['prompt'] != 'exit':
-			# Send the prompt to the API. Get the content from the response and save it as reply.
-			reply = sendPrompt(arguments['prompt'],arguments['systemMessage'], history, arguments['apiKey'], arguments['model'])['choices'][0]['message']['content']
+			# Send the prompt to the API.
+			replyData = sendPrompt(arguments['prompt'],arguments['systemMessage'], history, arguments['apiKey'], arguments['model'])
+
+			# Check API response for errors.
+			if "error" in replyData:
+				print(f"API Error: {replyData['error']}")
+				sys.exit(1)
+			elif "choices" in replyData and len(replyData["choices"]) > 0:
+				reply = replyData["choices"][0]["message"]["content"]
+			else:
+				print("Error: Unexpected API response format.")
 
 			# Remove first item from history if maxHistory is set
 			if arguments['maxHist'] > 0:
