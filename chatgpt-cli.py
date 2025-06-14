@@ -143,6 +143,7 @@ def main():
 			sys.exit(1)
 		else:
 			print("Error: Unexpected API response format.")
+			sys.exit(1)
 
 	# Run-While loop
 	while arguments['prompt'] != 'exit':
