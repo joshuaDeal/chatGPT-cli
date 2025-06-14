@@ -53,15 +53,26 @@ def sendPrompt(prompt, systemMessage, history, apiKey, model):
 	# Headers for the post request
 	headers = {"Content-Type": "application/json", "Authorization": f"Bearer {apiKey}", "OpenAI-Beta": "assistants=v1"}
 
-	# Send the post request
-	response = requests.post('https://api.openai.com/v1/chat/completions', json=data, headers=headers)
+	try:
+		# Send the post request
+		response = requests.post('https://api.openai.com/v1/chat/completions', json=data, headers=headers)
 
-	# Check if we got a successful response
-	if response.status_code == 200:
+		# Raise HTTPError for bad responses
+		response.raise_for_status()
+
 		return response.json()
-	else:
-		print("Error:", response.status_code)
-		return response.status_code
+	except requests.exceptions.HTTPError as httpError:
+		print(f"HTTP error occured: {httpError}")
+		return {"error": f"HTTP error: {response.status_code} - {response.text}"}
+	except requests.exceptions.ConnectionError:
+		print(f"Connection error: Failed to reach API")
+		return {"error": "Connection error: Unable to reach API."}
+	except requests.exceptions.Timeout:
+		print("Timeout error: API response took too long.")
+		return {"error": "Timeout error: The API took too long to respond."}
+	except requests.exceptions.RequestException as req_err:
+		print(f"Request error occurred: {req_err}")
+		return {"error": f"Request error: {req_err}"}
 
 def updateLog(content, logFile):
 	with open(logFile, 'a') as file:
