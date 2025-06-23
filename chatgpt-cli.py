@@ -41,8 +41,8 @@ def sendPrompt(prompt, systemMessage, history, apiKey, model):
 		messages.append({"role": "system", "content": systemMessage})
 
 	# Give the chatbot a chat history for context.
-	for i in range(len(history)):
-		messages.append({"role": "assistant", "content": history[i]})
+	if "exchanges" in history:
+		messages.extend(history["exchanges"])
 
 	# Also give the chatbot the user's current prompt.
 	messages.append({"role": "user", "content": prompt})
@@ -114,7 +114,7 @@ def evalArguments():
 	return output
 
 def main():
-	history = []
+	history = {"exchanges": []}
 
 	# Evaluate options
 	arguments = evalArguments()
@@ -165,17 +165,20 @@ def main():
 
 			# Remove first item from history if maxHistory is set
 			if arguments['maxHist'] > 0:
-				if len(history) > arguments['maxHist']:
-					history.pop(0)
+				excess = len(history["exchanges"]) - 2 * arguments['maxHist']
+				if excess >= 2:
+					history["exchanges"] = history["exchanges"][excess:]
 
 			# Update history.
-			history.append(f"User: {arguments['prompt']}\nChatbot: {reply}")
+			history["exchanges"].append({"role": "user", "content": arguments["prompt"]})
+			history["exchanges"].append({"role": "assistant", "content": reply})
 
 			# Print the reply
 			print("\n" + reply + "\n")
 
 			if arguments['logMode']:
-				updateLog(history[-1], arguments['logFile'])
+				logEntry = f"User: {arguments['prompt']}\nChatbot: {reply}\n"
+				updateLog(logEntry, arguments['logFile'])
 
 if __name__ == "__main__":
 	main()
