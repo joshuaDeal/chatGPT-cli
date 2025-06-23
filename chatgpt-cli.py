@@ -74,10 +74,12 @@ def sendPrompt(prompt, systemMessage, history, apiKey, model):
 		print(f"Request error occurred: {req_err}")
 		return {"error": f"Request error: {req_err}"}
 
-def updateLog(content, logFile):
-	with open(logFile, 'a') as file:
-		file.writelines(content)
-		file.write('\n')
+def updateLog(history, logFile):
+	try:
+		with open(logFile, 'w') as file:
+			json.dump(history, file, indent=4)
+	except Exception as e:
+		print(f"Failed to write to log file: {e}")
 
 # Evaluate options
 def evalArguments():
@@ -177,8 +179,7 @@ def main():
 			print("\n" + reply + "\n")
 
 			if arguments['logMode']:
-				logEntry = f"User: {arguments['prompt']}\nChatbot: {reply}\n"
-				updateLog(logEntry, arguments['logFile'])
+				updateLog(history, arguments['logFile'])
 
 if __name__ == "__main__":
 	main()
